@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import BottomNav from "@/components/layout/BottomNav";
+import LayoutContent from "@/components/layout/LayoutContent";
+import { HeaderProvider } from "@/context/HeaderContext";
+import { BottomNavProvider } from "@/context/BottomNavContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +30,11 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased bg-background text-text`}
       >
-        {children}
+        <HeaderProvider>
+          <BottomNavProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </BottomNavProvider>
+        </HeaderProvider>
       </body>
     </html>
   );

@@ -1,14 +1,22 @@
-import { ShoppingCart, Eye } from "lucide-react";
+import { ShoppingCart, Eye, Star } from "lucide-react";
 import { Product } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import Card from "../ui/Card";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+interface ExtendedProduct extends Product {
+  retailerName?: string;
+  city?: string;
+}
 
 interface ProductCardProps {
-  product: Product;
+  product: ExtendedProduct;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
+
   const discountPercentage = product.originalPrice
     ? Math.round(
         ((product.originalPrice - product.price) / product.originalPrice) * 100
@@ -20,7 +28,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Image Section */}
       <div className="relative overflow-hidden aspect-square">
         <Image
-          src={product.image}
+          src={`/images/${product.image || "readymade1.png"}`}
           alt={product.name}
           width={400}
           height={400}
@@ -29,10 +37,22 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Overlay Actions */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-          <button className="bg-white text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors">
+          <button
+            className="bg-white text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/products/${product.id}`);
+            }}
+          >
             <Eye className="h-5 w-5" />
           </button>
-          <button className="bg-primary text-white p-2 rounded-full hover:bg-primary-dark transition-colors">
+          <button
+            className="bg-primary text-white p-2 rounded-full hover:bg-primary-dark transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Handle add to cart action
+            }}
+          >
             <ShoppingCart className="h-5 w-5" />
           </button>
         </div>
@@ -55,14 +75,41 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Content Section */}
-      <div className="p-3">
+      <div className="p-3 space-y-2">
+        {/* Product Title */}
+        <h3 className="font-medium text-gray-900 text-sm line-clamp-2 leading-tight">
+          {product.name}
+        </h3>
+
+        {/* Retailer */}
+        {product.retailerName && (
+          <p className="text-xs text-gray-600 truncate">
+            by {product.retailerName}
+          </p>
+        )}
+
+        {/* Rating */}
+        {product.rating && (
+          <div className="flex items-center gap-1">
+            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+            <span className="text-xs font-medium text-gray-700">
+              {product.rating}
+            </span>
+            {product.reviewCount && (
+              <span className="text-xs text-gray-500">
+                ({product.reviewCount})
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Price */}
         <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-sm md:text-base font-bold text-gray-900">
             {formatPrice(product.price)}
           </span>
           {product.originalPrice && (
-            <span className="text-sm text-gray-500 line-through">
+            <span className="text-xs text-gray-500 line-through">
               {formatPrice(product.originalPrice)}
             </span>
           )}

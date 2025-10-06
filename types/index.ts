@@ -11,6 +11,50 @@ export interface Product {
   reviewCount?: number
   inStock: boolean
   tags?: string[]
+  retailerName?: string
+  city?: string
+}
+
+export interface ProductDetails extends Product {
+  images: string[]
+  colors: {
+    name: string
+    hex: string
+    image?: string
+  }[]
+  sizes: {
+    label: string
+    value: string
+    price: number
+  }[]
+  lining: {
+    name: string
+    description: string
+    price: number
+  }[]
+  header: {
+    name: string
+    description: string
+    price: number
+  }[]
+  stockCount: number
+  reviews: {
+    id: string
+    userName: string
+    userAvatar?: string
+    rating: number
+    comment: string
+    date: string
+    verified: boolean
+  }[]
+  specifications: {
+    label: string
+    value: string
+  }[]
+  policies: {
+    title: string
+    content: string
+  }[]
 }
 
 export interface CustomCurtain {

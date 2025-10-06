@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Sparkles, Home, Palette, Camera, Wrench, Star } from "lucide-react";
 import Button from "../ui/Button";
 import { cn } from "@/lib/utils";
@@ -95,6 +96,7 @@ const heroSlides: HeroSlide[] = [
 ];
 
 export default function HeroSection() {
+  const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const touchStartX = useRef<number>(0);
@@ -143,6 +145,21 @@ export default function HeroSection() {
   };
 
   const currentSlideData = heroSlides[currentSlide];
+
+  // Function to get navigation path based on slide CTA
+  const getNavigationPath = (cta: string) => {
+    switch (cta) {
+      case "Shop Premium Collection":
+      case "Explore Fabrics":
+        return "/products";
+      case "Book Service":
+        return "/services";
+      case "Try AR Preview":
+        return "/ar";
+      default:
+        return "/products";
+    }
+  };
 
   return (
     <section className="relative overflow-hidden h-[65vh] lg:h-[100vh] sm:h-[80vh] select-none">
@@ -232,6 +249,9 @@ export default function HeroSection() {
                       <Button
                         size="lg"
                         className="bg-white text-gray-900 hover:bg-gray-100 shadow-xl font-semibold text-sm sm:text-base"
+                        onClick={() =>
+                          router.push(getNavigationPath(slide.primaryCTA))
+                        }
                       >
                         {slide.primaryCTA}
                       </Button>
