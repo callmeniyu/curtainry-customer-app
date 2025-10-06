@@ -2,12 +2,10 @@
 
 import { Home, Package, Camera, Wrench, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBottomNav } from "@/context/BottomNavContext";
 
-interface BottomNavProps {
-  activeTab?: string;
-}
-
-export default function BottomNav({ activeTab = "home" }: BottomNavProps) {
+export default function BottomNav() {
+  const { activeTab } = useBottomNav();
   const navItems = [
     {
       id: "home",

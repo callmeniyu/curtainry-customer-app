@@ -17,9 +17,13 @@ import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   cartCount?: number;
+  transparent?: boolean;
 }
 
-export default function Header({ cartCount = 0 }: HeaderProps) {
+export default function Header({
+  cartCount = 0,
+  transparent = false,
+}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -41,21 +45,25 @@ export default function Header({ cartCount = 0 }: HeaderProps) {
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled
+          transparent && isScrolled
             ? "bg-white shadow-sm border-b border-gray-100"
-            : "bg-transparent"
+            : transparent
+            ? "bg-transparent"
+            : "bg-white shadow-sm border-b border-gray-100"
         )}
       >
-        <div className="section-padding">
+        <div className="px-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Left - Menu Button */}
             <button
               onClick={toggleMenu}
               className={cn(
                 "p-2 rounded-lg transition-colors",
-                isScrolled
+                transparent && isScrolled
                   ? "hover:bg-gray-100 text-gray-700"
-                  : "hover:bg-white/10 text-white"
+                  : transparent
+                  ? "hover:bg-white/10 text-white"
+                  : "hover:bg-gray-100 text-gray-700"
               )}
               aria-label="Toggle menu"
             >
@@ -67,7 +75,11 @@ export default function Header({ cartCount = 0 }: HeaderProps) {
               <h1
                 className={cn(
                   "text-xl font-bold transition-colors",
-                  isScrolled ? "text-primary" : "text-white drop-shadow-lg"
+                  transparent && isScrolled
+                    ? "text-primary"
+                    : transparent
+                    ? "text-white drop-shadow-lg"
+                    : "text-primary"
                 )}
               >
                 Curtainry
@@ -79,9 +91,11 @@ export default function Header({ cartCount = 0 }: HeaderProps) {
               <button
                 className={cn(
                   "relative p-2 rounded-lg transition-colors",
-                  isScrolled
+                  transparent && isScrolled
                     ? "hover:bg-gray-100 text-gray-700"
-                    : "hover:bg-white/10 text-white"
+                    : transparent
+                    ? "hover:bg-white/10 text-white"
+                    : "hover:bg-gray-100 text-gray-700"
                 )}
               >
                 <ShoppingCart className="h-6 w-6" />
@@ -94,9 +108,11 @@ export default function Header({ cartCount = 0 }: HeaderProps) {
               <button
                 className={cn(
                   "p-2 rounded-lg transition-colors",
-                  isScrolled
+                  transparent && isScrolled
                     ? "hover:bg-gray-100 text-gray-700"
-                    : "hover:bg-white/10 text-white"
+                    : transparent
+                    ? "hover:bg-white/10 text-white"
+                    : "hover:bg-gray-100 text-gray-700"
                 )}
               >
                 <User className="h-6 w-6" />

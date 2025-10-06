@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Button from "../ui/Button";
 import ProductCard from "./ProductCard";
@@ -14,6 +15,8 @@ export default function CategorySection({
   products,
   viewAllLink = "#",
 }: CategorySectionProps) {
+  const router = useRouter();
+
   return (
     <section className="py-8 bg-white">
       <div className="section-padding">
@@ -25,6 +28,7 @@ export default function CategorySection({
               variant="secondary"
               size="sm"
               className="inline-flex items-center gap-2"
+              onClick={() => router.push("/products")}
             >
               View All
               <ArrowRight className="h-4 w-4" />
