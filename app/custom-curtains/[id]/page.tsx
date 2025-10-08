@@ -16,19 +16,20 @@ import {
   RotateCcw,
   ChevronLeft,
   ChevronRight,
+  Ruler,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import { productDetailsData } from "@/lib/productsData";
+import { customCurtainDetailsData } from "@/lib/productsData";
 import { ProductDetails } from "@/types";
+import { useBottomNav } from "@/context/BottomNavContext";
+import { useHeader } from "@/context/HeaderContext";
 import ServicesSection from "@/components/product/ServicesSection";
 import ReviewsSection from "@/components/product/ReviewsSection";
 import SpecificationsSection from "@/components/product/SpecificationsSection";
 import PoliciesSection from "@/components/product/PoliciesSection";
-import { useBottomNav } from "@/context/BottomNavContext";
-import { useHeader } from "@/context/HeaderContext";
 
-export default function ProductDetailsPage() {
+export default function CustomCurtainDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const { setActiveTab } = useBottomNav();
@@ -37,9 +38,10 @@ export default function ProductDetailsPage() {
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(0);
   const [selectedLining, setSelectedLining] = useState(0);
   const [selectedHeader, setSelectedHeader] = useState(0);
+  const [width, setWidth] = useState(2); // in meters
+  const [height, setHeight] = useState(2.5); // in meters
   const [quantity, setQuantity] = useState(1);
   const [customRemarks, setCustomRemarks] = useState("");
 
@@ -50,7 +52,7 @@ export default function ProductDetailsPage() {
 
   useEffect(() => {
     if (params.id && typeof params.id === "string") {
-      const productData = productDetailsData[params.id];
+      const productData = customCurtainDetailsData[params.id];
       if (productData) {
         setProduct(productData);
       } else {
@@ -65,15 +67,16 @@ export default function ProductDetailsPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading product details...</p>
+          <p className="text-gray-600">Loading custom curtain details...</p>
         </div>
       </div>
     );
   }
 
+  const area = width * height;
+  const basePrice = product.price * area;
   const currentPrice =
-    product.price +
-    product.sizes[selectedSize].price +
+    basePrice +
     product.lining[selectedLining].price +
     product.header[selectedHeader].price;
   const totalPrice = currentPrice * quantity;
@@ -152,20 +155,14 @@ export default function ProductDetailsPage() {
                   )}
 
                   {/* Action Buttons */}
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <button className="bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-lg transition-all">
-                      <Heart className="h-5 w-5" />
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <button className="bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all">
+                      <Heart className="h-5 w-5 text-gray-600" />
                     </button>
-                    <button className="bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-lg transition-all">
-                      <Share2 className="h-5 w-5" />
+                    <button className="bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all">
+                      <Share2 className="h-5 w-5 text-gray-600" />
                     </button>
                   </div>
-
-                  {/* AR Try Button */}
-                  <button className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary-dark text-white rounded-full px-4 py-2 shadow-lg hover:shadow-xl transition-all font-semibold text-sm flex items-center gap-2">
-                    <Camera className="h-4 w-4" />
-                    AR
-                  </button>
                 </div>
 
                 {/* Thumbnail Images */}
@@ -175,17 +172,18 @@ export default function ProductDetailsPage() {
                       <button
                         key={index}
                         onClick={() => setSelectedImage(index)}
-                        className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                        className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
                           selectedImage === index
                             ? "border-primary"
-                            : "border-gray-200"
+                            : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
                         <Image
                           src={`/images/${image}`}
                           alt={`${product.name} ${index + 1}`}
-                          fill
-                          className="object-cover"
+                          width={64}
+                          height={64}
+                          className="w-full h-full object-cover"
                         />
                       </button>
                     ))}
@@ -194,10 +192,10 @@ export default function ProductDetailsPage() {
               </div>
 
               {/* Product Details */}
-              <div className="space-y-6 w-full">
+              <div className="space-y-6">
                 {/* Title and Rating */}
-                <div className="w-full">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                     {product.name}
                   </h1>
                   <div className="flex items-center gap-4 mb-4">
@@ -207,19 +205,20 @@ export default function ProductDetailsPage() {
                           key={i}
                           className={`h-5 w-5 ${
                             i < Math.floor(product.rating || 0)
-                              ? "text-yellow-400 fill-current"
+                              ? "fill-yellow-400 text-yellow-400"
                               : "text-gray-300"
                           }`}
                         />
                       ))}
-                      <span className="ml-2 text-lg font-semibold">
+                      <span className="ml-2 text-sm font-medium text-gray-700">
                         {product.rating}
                       </span>
+                      <span className="text-sm text-gray-500">
+                        ({product.reviewCount} reviews)
+                      </span>
                     </div>
-                    <span className="text-gray-600">
-                      ({product.reviewCount} reviews)
-                    </span>
                   </div>
+                  <p className="text-gray-600">{product.description}</p>
                 </div>
 
                 {/* Pricing */}
@@ -264,122 +263,22 @@ export default function ProductDetailsPage() {
 
                 {/* Color Selection */}
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Color</h3>
-                  <div className="flex flex-wrap gap-3">
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    Color: {product.colors[selectedColor].name}
+                  </h3>
+                  <div className="flex gap-3 flex-wrap">
                     {product.colors.map((color, index) => (
                       <button
                         key={index}
                         onClick={() => setSelectedColor(index)}
-                        className={`relative w-12 h-12 rounded-full border-2 transition-all ${
+                        className={`w-12 h-12 rounded-full border-2 transition-all ${
                           selectedColor === index
                             ? "border-primary scale-110"
-                            : "border-gray-300"
+                            : "border-gray-300 hover:border-gray-400"
                         }`}
                         style={{ backgroundColor: color.hex }}
                         title={color.name}
-                      >
-                        {selectedColor === index && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-3 h-3 bg-white rounded-full"></div>
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {product.colors[selectedColor].name}
-                  </p>
-                </div>
-
-                {/* Size Selection */}
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Size</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    {product.sizes.map((size, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedSize(index)}
-                        className={`p-3 border rounded-lg text-center transition-all ${
-                          selectedSize === index
-                            ? "border-primary bg-primary text-white"
-                            : "border-gray-300 hover:border-primary"
-                        }`}
-                      >
-                        <div className="font-medium">{size.label}</div>
-                        <div className="text-sm opacity-75">
-                          {size.price === 0 ? "Base" : `+₹${size.price}`}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Lining Selection */}
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Lining</h3>
-                  <div className="space-y-2">
-                    {product.lining.map((lining, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedLining(index)}
-                        className={`w-full p-3 border rounded-lg text-left transition-all ${
-                          selectedLining === index
-                            ? "border-primary bg-primary/5"
-                            : "border-gray-300 hover:border-primary"
-                        }`}
-                      >
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <div className="font-medium">{lining.name}</div>
-                            <div className="text-sm text-gray-600">
-                              {lining.description}
-                            </div>
-                          </div>
-                          <div className="text-sm font-medium">
-                            {lining.price === 0
-                              ? "Included"
-                              : lining.price > 0
-                              ? `+₹${lining.price}`
-                              : `₹${lining.price}`}
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Header Selection */}
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">
-                    Header Style
-                  </h3>
-                  <div className="space-y-2">
-                    {product.header.map((header, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedHeader(index)}
-                        className={`w-full p-3 border rounded-lg text-left transition-all ${
-                          selectedHeader === index
-                            ? "border-primary bg-primary/5"
-                            : "border-gray-300 hover:border-primary"
-                        }`}
-                      >
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <div className="font-medium">{header.name}</div>
-                            <div className="text-sm text-gray-600">
-                              {header.description}
-                            </div>
-                          </div>
-                          <div className="text-sm font-medium">
-                            {header.price === 0
-                              ? "Included"
-                              : header.price > 0
-                              ? `+₹${header.price}`
-                              : `₹${header.price}`}
-                          </div>
-                        </div>
-                      </button>
+                      />
                     ))}
                   </div>
                 </div>
@@ -387,37 +286,14 @@ export default function ProductDetailsPage() {
                 {/* Custom Remarks */}
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-3">
-                    Custom Remarks
+                    Special Instructions (Optional)
                   </h3>
                   <textarea
                     value={customRemarks}
                     onChange={(e) => setCustomRemarks(e.target.value)}
-                    placeholder="Any special customization requests..."
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    rows={3}
+                    placeholder="Any special requirements or notes..."
+                    className="w-full border border-gray-300 rounded px-3 py-2 h-20 resize-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
-                </div>
-
-                {/* Quantity */}
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Quantity</h3>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-2 border border-gray-300 rounded-lg hover:border-primary transition-colors"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <span className="px-4 py-2 border border-gray-300 rounded-lg min-w-[60px] text-center">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="p-2 border border-gray-300 rounded-lg hover:border-primary transition-colors"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
                 </div>
 
                 {/* Action Buttons */}
@@ -427,12 +303,12 @@ export default function ProductDetailsPage() {
                     Add to Cart
                   </Button>
                   <Button className="flex-1 bg-primary hover:bg-primary-dark text-white py-3">
-                    Buy Now
+                    Get a quote
                   </Button>
                 </div>
 
                 {/* Trust Badges */}
-                <div className="grid grid-cols-3 gap-4 text-center mt-6">
+                <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="flex flex-col items-center">
                     <Truck className="h-8 w-8 text-primary mb-2" />
                     <span className="text-sm font-medium">Free Delivery</span>
@@ -453,42 +329,31 @@ export default function ProductDetailsPage() {
                     <span className="text-xs text-gray-500">30-day policy</span>
                   </div>
                 </div>
-
-                {/* Services Section */}
-                <ServicesSection />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Product Description */}
-        <div className="bg-white border-t">
+        {/* Services Section */}
+        <div className="bg-white border-t border-b">
           <div className="section-padding py-8">
             <div className="max-w-7xl mx-auto">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Description
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                {product.description}
-              </p>
+              <ServicesSection />
             </div>
           </div>
         </div>
 
+        {/* Reviews Section */}
+        <ReviewsSection reviews={product.reviews} />
+
         {/* Specifications */}
         <SpecificationsSection
           specifications={product.specifications}
-          selectedSize={product.sizes[selectedSize].label}
-          selectedHeader={product.header[selectedHeader].name}
-          selectedLining={product.lining[selectedLining].name}
           selectedColor={product.colors[selectedColor].name}
           quantity={quantity}
           totalPrice={totalPrice}
-          isReadymade={true}
+          isReadymade={false}
         />
-
-        {/* Reviews */}
-        <ReviewsSection reviews={product.reviews} />
 
         {/* Policies */}
         <PoliciesSection policies={product.policies} />

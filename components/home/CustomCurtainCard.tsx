@@ -10,11 +10,11 @@ interface ExtendedProduct extends Product {
   city?: string;
 }
 
-interface ProductCardProps {
+interface CustomCurtainCardProps {
   product: ExtendedProduct;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function CustomCurtainCard({ product }: CustomCurtainCardProps) {
   const router = useRouter();
 
   const discountPercentage = product.originalPrice
@@ -41,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="bg-white text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/products/${product.id}`);
+              router.push(`/custom-curtains/${product.id}`);
             }}
           >
             <Eye className="h-5 w-5" />
@@ -105,14 +105,10 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Price */}
         <div className="flex items-center gap-2">
-          <span className="text-sm md:text-base text-primary font-bold">
-            {formatPrice(product.price)}
+          <span className="text-sm md:text-base font-bold ">
+            Starting from{" "}
+            <span className="text-primary">{formatPrice(product.price)}/m</span>
           </span>
-          {product.originalPrice && (
-            <span className="text-xs line-through">
-              {formatPrice(product.originalPrice)}
-            </span>
-          )}
         </div>
       </div>
     </Card>

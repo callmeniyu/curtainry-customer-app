@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Button from "../ui/Button";
 import ProductCard from "./ProductCard";
+import CustomCurtainCard from "./CustomCurtainCard";
 
 interface CategorySectionProps {
   title: string;
@@ -37,9 +38,13 @@ export default function CategorySection({
 
           {/* Products Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {products.map((product) =>
+              product.category === "custom" ? (
+                <CustomCurtainCard key={product.id} product={product} />
+              ) : (
+                <ProductCard key={product.id} product={product} />
+              )
+            )}
           </div>
         </div>
       </div>

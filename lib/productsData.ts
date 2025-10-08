@@ -299,11 +299,11 @@ export const readyMadeCurtainsData: ExtendedProduct[] = [
 // Mock data for Custom Curtains
 export const customCurtainsData: ExtendedProduct[] = [
   {
-    id: "7",
+    id: "1",
     name: "Royal Silk Collection",
     description: "Luxurious silk fabrics in various colors and patterns, custom-tailored to your specifications.",
     price: 899,
-    image: "/images/custom_curtain1.jpg",
+    image: "custom_curtain1.jpg",
     category: "custom",
     rating: 4.9,
     reviewCount: 67,
@@ -315,11 +315,11 @@ export const customCurtainsData: ExtendedProduct[] = [
     color: "Red",
   },
   {
-    id: "8",
+    id: "2",
     name: "Premium Cotton Blends",
     description: "High-quality cotton blend fabrics perfect for custom curtains with durability.",
     price: 549,
-    image: "/images/custom_curtain2.jpg",
+    image: "custom_curtain2.jpg",
     category: "custom",
     rating: 4.6,
     reviewCount: 134,
@@ -331,12 +331,12 @@ export const customCurtainsData: ExtendedProduct[] = [
     color: "Blue",
   },
   {
-    id: "9",
+    id: "3",
     name: "Designer Lace Patterns",
     description: "Intricate lace designs that add sophistication and elegance to any space.",
     price: 1299,
     originalPrice: 1799,
-    image: "/images/custom_curtain3.jpg",
+    image: "custom_curtain3.jpg",
     category: "custom",
     rating: 4.8,
     reviewCount: 89,
@@ -348,7 +348,7 @@ export const customCurtainsData: ExtendedProduct[] = [
     color: "White",
   },
   {
-    id: "10",
+    id: "4",
     name: "Embroidered Heritage Fabrics",
     description: "Traditional embroidered patterns with modern appeal, handcrafted to perfection.",
     price: 1799,
@@ -364,7 +364,7 @@ export const customCurtainsData: ExtendedProduct[] = [
     color: "Gold",
   },
   {
-    id: "11",
+    id: "5",
     name: "Velvet Luxury Fabrics",
     description: "Rich velvet fabrics for premium custom curtains with luxurious feel.",
     price: 1599,
@@ -381,7 +381,7 @@ export const customCurtainsData: ExtendedProduct[] = [
     color: "Black",
   },
   {
-    id: "12",
+    id: "6",
     name: "Linen Natural Fabrics",
     description: "Natural linen fabrics for breathable and elegant custom curtains.",
     price: 799,
@@ -398,7 +398,162 @@ export const customCurtainsData: ExtendedProduct[] = [
   },
 ];
 
-// Filter options
+// Detailed custom curtain data for custom curtain details page
+export const customCurtainDetailsData: Record<string, ProductDetails> = {
+  "1": {
+    id: "1",
+    name: "Luxurious Silk Custom Curtains",
+    description: "Indulge in the opulence of our Luxurious Silk Custom Curtains, meticulously crafted from premium silk fabric that ensures complete elegance and sophistication to your space. Perfect for bedrooms, living rooms, or any room where style is paramount. The rich texture and extensive color options make these curtains not just functional but also a statement piece in your interior design.",
+    price: 3999,
+    originalPrice: 5999,
+    image: "custom_curtain1.jpg",
+    category: "custom",
+    rating: 4.9,
+    reviewCount: 87,
+    inStock: true,
+    tags: ["Silk", "Luxury", "Custom"],
+    retailerName: "Custom Creations",
+    city: "Bangalore",
+    images: [
+      "custom_curtain1.jpg",
+      "custom_curtain1.jpg",
+      "custom_curtain2.jpg",
+      "custom_curtain3.jpg"
+    ],
+    colors: [
+      { name: "Ivory White", hex: "#FFFFFF", image: "custom_curtain1_white.jpg" },
+      { name: "Deep Burgundy", hex: "#800020", image: "custom_curtain1_burgundy.jpg" },
+      { name: "Forest Green", hex: "#228B22", image: "custom_curtain1_green.jpg" },
+      { name: "Royal Blue", hex: "#4169E1", image: "custom_curtain1_blue.jpg" },
+      { name: "Champagne Gold", hex: "#F7E7CE", image: "custom_curtain1_gold.jpg" }
+    ],
+    sizes: [
+      { label: "Custom Size", value: "custom", price: 0 }
+    ],
+    lining: [
+      { name: "Blackout", description: "Complete light blockage, thermal insulation", price: 0 },
+      { name: "Standard", description: "Light filtering, basic insulation", price: -500 },
+      { name: "No Lining", description: "Sheer fabric, maximum light transmission", price: -1000 }
+    ],
+    header: [
+      { name: "Pencil Pleat", description: "Classic pleated header for traditional look", price: 0 },
+      { name: "Eyelet", description: "Modern ring top header for contemporary style", price: 200 },
+      { name: "Tab Top", description: "Casual tab header for relaxed appearance", price: 150 },
+      { name: "Grommet", description: "Sturdy metal eyelets for heavy fabrics", price: 300 }
+    ],
+    stockCount: 50,
+    reviews: [
+      {
+        id: "1",
+        userName: "Priya Sharma",
+        rating: 5,
+        comment: "Absolutely stunning custom curtains! The silk quality is exceptional and the customization process was seamless.",
+        date: "2024-01-15",
+        verified: true
+      },
+      {
+        id: "2",
+        userName: "Rahul Kumar",
+        rating: 5,
+        comment: "Worth every penny. The fabric drapes beautifully and the color matches perfectly with our decor.",
+        date: "2024-01-10",
+        verified: true
+      }
+    ],
+    specifications: [
+      { label: "Fabric", value: "100% Pure Silk" },
+      { label: "Care Instructions", value: "Dry clean only" },
+      { label: "Origin", value: "India" },
+      { label: "Warranty", value: "2 years against manufacturing defects" }
+    ],
+    policies: [
+      {
+        title: "Custom Order Policy",
+        content: "Custom orders are non-returnable. Please ensure measurements are accurate before placing order."
+      },
+      {
+        title: "Delivery Time",
+        content: "Custom curtains take 2-3 weeks for manufacturing and delivery."
+      }
+    ]
+  },
+  "2": {
+    id: "2",
+    name: "Premium Cotton Custom Curtains",
+    description: "Experience the perfect blend of comfort and style with our Premium Cotton Custom Curtains. Made from high-quality cotton fabric that's durable, breathable, and easy to maintain. Ideal for modern homes seeking timeless elegance with contemporary appeal.",
+    price: 2499,
+    originalPrice: 3499,
+    image: "custom_curtain2.jpg",
+    category: "custom",
+    rating: 4.7,
+    reviewCount: 124,
+    inStock: true,
+    tags: ["Cotton", "Durable", "Custom"],
+    retailerName: "Modern Home Textiles",
+    city: "Mumbai",
+    images: [
+      "custom_curtain2.jpg",
+      "custom_curtain2.jpg",
+      "custom_curtain3.jpg",
+      "custom_curtain4.jpg"
+    ],
+    colors: [
+      { name: "Pure White", hex: "#FFFFFF", image: "custom_curtain2_white.jpg" },
+      { name: "Soft Gray", hex: "#D3D3D3", image: "custom_curtain2_gray.jpg" },
+      { name: "Sage Green", hex: "#9CAF88", image: "custom_curtain2_green.jpg" },
+      { name: "Dusty Blue", hex: "#7B9BB8", image: "custom_curtain2_blue.jpg" }
+    ],
+    sizes: [
+      { label: "Custom Size", value: "custom", price: 0 }
+    ],
+    lining: [
+      { name: "Blackout", description: "Complete light blockage, thermal insulation", price: 0 },
+      { name: "Standard", description: "Light filtering, basic insulation", price: -300 },
+      { name: "No Lining", description: "Sheer fabric, maximum light transmission", price: -600 }
+    ],
+    header: [
+      { name: "Pencil Pleat", description: "Classic pleated header for traditional look", price: 0 },
+      { name: "Eyelet", description: "Modern ring top header for contemporary style", price: 150 },
+      { name: "Tab Top", description: "Casual tab header for relaxed appearance", price: 100 },
+      { name: "Grommet", description: "Sturdy metal eyelets for heavy fabrics", price: 200 }
+    ],
+    stockCount: 75,
+    reviews: [
+      {
+        id: "1",
+        userName: "Anjali Patel",
+        rating: 5,
+        comment: "Perfect custom fit for our windows. The cotton fabric is high quality and washes well.",
+        date: "2024-01-20",
+        verified: true
+      },
+      {
+        id: "2",
+        userName: "Vikram Singh",
+        rating: 4,
+        comment: "Good quality and excellent customization service. Delivery was on time.",
+        date: "2024-01-18",
+        verified: true
+      }
+    ],
+    specifications: [
+      { label: "Fabric", value: "100% Cotton" },
+      { label: "Care Instructions", value: "Machine washable" },
+      { label: "Origin", value: "India" },
+      { label: "Warranty", value: "1 year against manufacturing defects" }
+    ],
+    policies: [
+      {
+        title: "Custom Order Policy",
+        content: "Custom orders are non-returnable. Please ensure measurements are accurate before placing order."
+      },
+      {
+        title: "Delivery Time",
+        content: "Custom curtains take 2-3 weeks for manufacturing and delivery."
+      }
+    ]
+  }
+};
 export const cities = ["All Cities", "Bangalore", "Mumbai", "Delhi", "Chennai"];
 export const companies = ["All Companies", "Elite Curtain Studio", "Modern Home Textiles", "Classic Interiors", "Premium Drapes", "Fabric World", "Designer Textiles", "Custom Creations", "Heritage Fabrics"];
 export const types = ["All Types", "Blackout", "Sheer", "Room Darkening", "Thermal", "Printed", "Solid", "Silk", "Cotton", "Lace", "Embroidered", "Velvet", "Linen"];

@@ -10,6 +10,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import ProductCard from "@/components/home/ProductCard";
+import CustomCurtainCard from "@/components/home/CustomCurtainCard";
 import Button from "@/components/ui/Button";
 import { useBottomNav } from "@/context/BottomNavContext";
 import { useHeader } from "@/context/HeaderContext";
@@ -303,9 +304,13 @@ export default function ProductsPage() {
           <div className="max-w-7xl mx-auto">
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+                {filteredProducts.map((product) =>
+                  activeProductTab === "readymade" ? (
+                    <ProductCard key={product.id} product={product} />
+                  ) : (
+                    <CustomCurtainCard key={product.id} product={product} />
+                  )
+                )}
               </div>
             ) : (
               <div className="text-center py-12">
@@ -329,8 +334,14 @@ export default function ProductsPage() {
 
       {/* Filters Modal */}
       {showFilters && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowFilters(false)}
+        >
+          <div
+            className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-4 border-b">
               <h3 className="text-lg font-semibold">Filters</h3>
               <button
@@ -349,7 +360,7 @@ export default function ProductsPage() {
                 <select
                   value={selectedCompany}
                   onChange={(e) => setSelectedCompany(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
                   {companies.map((company) => (
                     <option key={company} value={company}>
@@ -366,7 +377,7 @@ export default function ProductsPage() {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
                   {types.map((type) => (
                     <option key={type} value={type}>
@@ -383,7 +394,7 @@ export default function ProductsPage() {
                 <select
                   value={selectedColor}
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
                   {colors.map((color) => (
                     <option key={color} value={color}>
@@ -400,7 +411,7 @@ export default function ProductsPage() {
                 <select
                   value={selectedPriceRange}
                   onChange={(e) => setSelectedPriceRange(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
                   {priceRanges.map((range) => (
                     <option key={range} value={range}>
@@ -417,7 +428,7 @@ export default function ProductsPage() {
                 <select
                   value={selectedRating}
                   onChange={(e) => setSelectedRating(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
                   {ratings.map((rating) => (
                     <option key={rating} value={rating}>
@@ -446,8 +457,14 @@ export default function ProductsPage() {
 
       {/* Sort Modal */}
       {showSort && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowSort(false)}
+        >
+          <div
+            className="bg-white rounded-lg max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-4 border-b">
               <h3 className="text-lg font-semibold">Sort By</h3>
               <button
