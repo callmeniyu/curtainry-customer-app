@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import {
-  Menu,
+  AlignJustify,
   X,
   ShoppingCart,
   User,
@@ -12,22 +12,67 @@ import {
   Camera,
   Wrench,
   Building2,
+  Heart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/context/CartContext";
+import { useHeader } from "@/context/HeaderContext";
+import { useRouter } from "next/navigation";
+import { readyMadeCurtainsData, customCurtainsData } from "@/lib/productsData";
 
 interface HeaderProps {
-  cartCount?: number;
   transparent?: boolean;
+  pageTitle?: string;
+  showSearch?: boolean;
 }
 
 export default function Header({
-  cartCount = 0,
   transparent = false,
+  pageTitle,
+  showSearch = false,
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { getTotalItems } = useCart();
+  const { searchTerm, setSearchTerm } = useHeader();
+  const router = useRouter();
+
+  const allProducts = [...readyMadeCurtainsData, ...customCurtainsData];
+  const suggestions = searchTerm
+    ? allProducts
+        .filter(
+          (product) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.retailerName
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+        )
+        .slice(0, 5)
+    : [];
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (!isSearchOpen) {
+      // Focus search input when opening
+      setTimeout(() => {
+        const searchInput = document.getElementById("header-search-input");
+        if (searchInput) searchInput.focus();
+      }, 100);
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      // Navigate to products page with search query
+      router.push(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+      setIsSearchOpen(false);
+      setSearchTerm("");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,7 +103,7 @@ export default function Header({
             <button
               onClick={toggleMenu}
               className={cn(
-                "p-2 rounded-lg transition-colors",
+                "p-2 rounded-lg transition-all duration-300 hover:scale-110",
                 transparent && isScrolled
                   ? "hover:bg-gray-100 text-gray-700"
                   : transparent
@@ -67,52 +112,157 @@ export default function Header({
               )}
               aria-label="Toggle menu"
             >
-              <Menu className="h-6 w-6" />
+              <AlignJustify
+                className={cn(
+                  "h-6 w-6 transition-all duration-300",
+                  isMenuOpen ? "rotate-90" : "rotate-0"
+                )}
+              />
             </button>
 
-            {/* Center - Logo */}
-            <div className="flex-1 flex justify-start">
-              <h1
-                className={cn(
-                  "text-xl font-bold transition-colors",
-                  transparent && isScrolled
-                    ? "text-primary"
-                    : transparent
-                    ? "text-white drop-shadow-lg"
-                    : "text-primary"
-                )}
-              >
-                Curtainry
-              </h1>
+            {/* Center - Title or Logo */}
+            <div
+              className={cn(
+                "flex-1 flex justify-start",
+                isSearchOpen ? "hidden md:flex" : "flex"
+              )}
+            >
+              {pageTitle ? (
+                <h1
+                  className={cn(
+                    "text-xl font-bold transition-colors",
+                    transparent && isScrolled
+                      ? "text-gray-900"
+                      : transparent
+                      ? "text-white drop-shadow-lg"
+                      : "text-gray-900"
+                  )}
+                >
+                  {pageTitle}
+                </h1>
+              ) : (
+                <button
+                  onClick={() => router.push("/")}
+                  className={cn(
+                    "text-xl font-bold transition-colors hover:opacity-80",
+                    transparent && isScrolled
+                      ? "text-primary"
+                      : transparent
+                      ? "text-white drop-shadow-lg"
+                      : "text-primary"
+                  )}
+                >
+                  Curtainry
+                </button>
+              )}
             </div>
 
-            {/* Right - Cart & Profile */}
+            {/* Right - Search, Cart & Profile */}
             <div className="flex items-center gap-2">
+              {showSearch && (
+                <div className="flex items-center">
+                  {/* Search Button - Hidden when search is open */}
+                  {!isSearchOpen && (
+                    <button
+                      onClick={toggleSearch}
+                      className={cn(
+                        "p-2 rounded-lg transition-colors",
+                        transparent && isScrolled
+                          ? "hover:bg-gray-100 text-gray-700"
+                          : transparent
+                          ? "hover:bg-white/10 text-white"
+                          : "hover:bg-gray-100 text-gray-700"
+                      )}
+                      aria-label="Toggle search"
+                    >
+                      <Search className="h-6 w-6" />
+                    </button>
+                  )}
+
+                  {/* Expandable Search Field */}
+                  <div
+                    className={cn(
+                      "overflow-hidden transition-all duration-300 ease-in-out relative",
+                      isSearchOpen
+                        ? "w-full md:w-64 opacity-100"
+                        : "w-0 opacity-0"
+                    )}
+                  >
+                    <form
+                      onSubmit={handleSearch}
+                      className="flex items-center relative"
+                    >
+                      <input
+                        id="header-search-input"
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search products..."
+                        className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg outline-none bg-white text-sm text-gray-900 placeholder-gray-500 shadow-sm"
+                      />
+                      {isSearchOpen && (
+                        <X
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer"
+                          onClick={toggleSearch}
+                        />
+                      )}
+                    </form>
+                    {isSearchOpen && suggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
+                        {suggestions.map((product) => (
+                          <button
+                            key={product.id}
+                            onClick={() => {
+                              router.push(
+                                `/products?search=${encodeURIComponent(
+                                  product.name
+                                )}`
+                              );
+                              setIsSearchOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            <div className="font-medium">{product.name}</div>
+                            <div className="text-sm text-gray-500">
+                              by {product.retailerName}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <button
+                onClick={() => router.push("/cart")}
                 className={cn(
                   "relative p-2 rounded-lg transition-colors",
                   transparent && isScrolled
                     ? "hover:bg-gray-100 text-gray-700"
                     : transparent
                     ? "hover:bg-white/10 text-white"
-                    : "hover:bg-gray-100 text-gray-700"
+                    : "hover:bg-gray-100 text-gray-700",
+                  isSearchOpen ? "hidden sm:flex" : ""
                 )}
               >
                 <ShoppingCart className="h-6 w-6" />
-                {cartCount > 0 && (
+                {getTotalItems() > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                    {cartCount > 9 ? "9+" : cartCount}
+                    {getTotalItems() > 9 ? "9+" : getTotalItems()}
                   </span>
                 )}
               </button>
               <button
+                onClick={() => router.push("/account")}
                 className={cn(
                   "p-2 rounded-lg transition-colors",
                   transparent && isScrolled
                     ? "hover:bg-gray-100 text-gray-700"
                     : transparent
                     ? "hover:bg-white/10 text-white"
-                    : "hover:bg-gray-100 text-gray-700"
+                    : "hover:bg-gray-100 text-gray-700",
+                  isSearchOpen ? "hidden sm:flex" : ""
                 )}
               >
                 <User className="h-6 w-6" />
@@ -147,7 +297,7 @@ export default function Header({
         >
           {/* Sidebar Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-100">
-            <h2 className="text-xl font-bold text-primary">Curtainry</h2>
+            <h2 className="text-xl font-bold text-primary">Curtainary</h2>
             <button
               onClick={toggleMenu}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -177,7 +327,12 @@ export default function Header({
 
             <div className="mt-8 pt-8 border-t border-gray-100">
               <div className="space-y-2">
-                <SidebarLink icon={User} label="My Profile" href="/profile" />
+                <SidebarLink icon={User} label="My Profile" href="/account" />
+                <SidebarLink
+                  icon={Heart}
+                  label="My Wishlist"
+                  href="/wishlist"
+                />
                 <SidebarLink
                   icon={ShoppingCart}
                   label="My Orders"

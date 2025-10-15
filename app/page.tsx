@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { MapPin, Search } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/home/HeroSection";
 import CategorySection from "@/components/home/CategorySection";
@@ -16,6 +18,7 @@ import {
 } from "@/components/home/ProductSection";
 import { companiesData } from "@/lib/companiesData";
 import { servicesData } from "@/lib/servicesData";
+import { cities } from "@/lib/productsData";
 import Button from "@/components/ui/Button";
 import { useHeader } from "@/context/HeaderContext";
 import { useBottomNav } from "@/context/BottomNavContext";
@@ -36,6 +39,80 @@ export default function HomePage() {
       <main>
         {/* Hero Section */}
         <HeroSection />
+
+        {/* Search Section */}
+        <div className="bg-white pt-6 pb-3 md:py-8 ">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search for curtains, services, companies..."
+                  onClick={() => router.push("/search")}
+                  className="w-full py-2 px-3 md:px-6  md:py-4 text-lg border-2 border-gray-300 rounded-full outline-none bg-gray-50 hover:bg-white transition-colors cursor-pointer placeholder:text-sm md:placeholder:text-lg"
+                  readOnly
+                />
+                <button
+                  onClick={() => router.push("/search")}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Cities Section */}
+        <div className="bg-white">
+          <div className="w-full">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pl-4">
+              <div className="flex flex-col items-center gap-2 p-2">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+                  <MapPin className="h-8 w-8 text-gray-500" />
+                </div>
+                <span className="text-sm font-medium text-gray-700 text-center">
+                  Nearby
+                </span>
+              </div>
+              <div className="flex gap-2">
+                {cities
+                  .filter(
+                    (city) =>
+                      city !== "All Cities" &&
+                      [
+                        "Delhi",
+                        "Mumbai",
+                        "Bangalore",
+                        "Chennai",
+                        "Kochi",
+                        "Hyderabad",
+                      ].includes(city)
+                  )
+                  .map((city) => (
+                    <button
+                      key={city}
+                      onClick={() => router.push(`/products?city=${city}`)}
+                      className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+                        <Image
+                          src={`/images/${city.toLowerCase()}.jpg`}
+                          alt={city}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 text-center">
+                        {city}
+                      </span>
+                    </button>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Ready-Made Curtains Category */}
         <CategorySection

@@ -7,6 +7,8 @@ import BottomNav from "@/components/layout/BottomNav";
 import LayoutContent from "@/components/layout/LayoutContent";
 import { HeaderProvider } from "@/context/HeaderContext";
 import { BottomNavProvider } from "@/context/BottomNavContext";
+import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +34,11 @@ export default function RootLayout({
       >
         <HeaderProvider>
           <BottomNavProvider>
-            <LayoutContent>{children}</LayoutContent>
+            <CartProvider>
+              <WishlistProvider>
+                <LayoutContent>{children}</LayoutContent>
+              </WishlistProvider>
+            </CartProvider>
           </BottomNavProvider>
         </HeaderProvider>
       </body>

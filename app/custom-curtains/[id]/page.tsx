@@ -19,11 +19,12 @@ import {
   Ruler,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
 import { customCurtainDetailsData } from "@/lib/productsData";
 import { ProductDetails } from "@/types";
 import { useBottomNav } from "@/context/BottomNavContext";
 import { useHeader } from "@/context/HeaderContext";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import ServicesSection from "@/components/product/ServicesSection";
 import ReviewsSection from "@/components/product/ReviewsSection";
 import SpecificationsSection from "@/components/product/SpecificationsSection";
@@ -34,6 +35,8 @@ export default function CustomCurtainDetailsPage() {
   const router = useRouter();
   const { setActiveTab } = useBottomNav();
   const { setTransparent } = useHeader();
+  const { addToWishlist, removeFromWishlist, wishlistItems, isInWishlist } =
+    useWishlist();
 
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -90,6 +93,24 @@ export default function CustomCurtainDetailsPage() {
       setSelectedImage((prev) =>
         prev === product.images.length - 1 ? 0 : prev + 1
       );
+    }
+  };
+
+  const handleAddToWishlist = () => {
+    if (isInWishlist(product.id)) {
+      const item = wishlistItems.find((item) => item.productId === product.id);
+      if (item) {
+        removeFromWishlist(item.id);
+      }
+    } else {
+      const wishlistItem = {
+        productId: product.id,
+        productType: "custom" as const,
+        name: product.name,
+        image: product.images[0],
+        price: product.price,
+      };
+      addToWishlist(wishlistItem);
     }
   };
 
@@ -156,8 +177,19 @@ export default function CustomCurtainDetailsPage() {
 
                   {/* Action Buttons */}
                   <div className="absolute top-4 right-4 flex gap-2">
-                    <button className="bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all">
-                      <Heart className="h-5 w-5 text-gray-600" />
+                    <button
+                      onClick={handleAddToWishlist}
+                      className={`p-2 rounded-full shadow-lg transition-all ${
+                        isInWishlist(product.id)
+                          ? "bg-red-500 text-white"
+                          : "bg-white/80 hover:bg-white text-gray-600"
+                      }`}
+                    >
+                      <Heart
+                        className={`h-5 w-5 ${
+                          isInWishlist(product.id) ? "fill-current" : ""
+                        }`}
+                      />
                     </button>
                     <button className="bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all">
                       <Share2 className="h-5 w-5 text-gray-600" />
@@ -296,14 +328,69 @@ export default function CustomCurtainDetailsPage() {
                   />
                 </div>
 
+                {/* Booking Process */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Ruler className="h-5 w-5 text-primary" />
+                    What happens after booking?
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        1
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          <strong>Consultation Visit:</strong> Our expert
+                          consultant will visit your home on the selected date
+                          with a catalog and provide personalized guidance to
+                          address all your queries.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        2
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          <strong>Precise Measurements:</strong> The consultant
+                          will accurately measure your window dimensions and
+                          send the data to our retailer partner.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        3
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          <strong>Customized Proposal:</strong> Our retailer
+                          will create a detailed proposal with implementation
+                          plans, timelines, and all specifications.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        4
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          <strong>Implementation & Tracking:</strong> Once
+                          approved, implementation begins. Track progress live
+                          through your bookings dashboard.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4">
-                  <Button variant="secondary" className="flex-1 py-3">
-                    <ShoppingCart className="h-5 w-5 mr-2" />
-                    Add to Cart
-                  </Button>
                   <Button className="flex-1 bg-primary hover:bg-primary-dark text-white py-3">
-                    Get a quote
+                    Book Now
                   </Button>
                 </div>
 

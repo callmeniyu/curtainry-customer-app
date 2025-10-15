@@ -162,7 +162,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden h-[65vh] lg:h-[100vh] sm:h-[80vh] select-none">
+    <section className="relative overflow-hidden h-[50vh] sm:h-[65vh] lg:h-[100vh] select-none">
       {/* Carousel Container */}
       <div
         ref={carouselRef}
@@ -205,9 +205,9 @@ export default function HeroSection() {
               <div className="section-padding w-full">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full">
                   {/* Left - Main Content */}
-                  <div className="space-y-4 sm:space-y-6 text-center lg:text-left">
+                  <div className="space-y-3 sm:space-y-4 lg:space-y-6 text-center lg:text-left">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 md:mt-12">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 lg:mt-12">
                       <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                       <span className="text-xs sm:text-sm font-semibold text-white">
                         {slide.badge}
@@ -245,7 +245,7 @@ export default function HeroSection() {
                     </p>
 
                     {/* CTAs */}
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start pt-2 sm:pt-4">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start pt-1 sm:pt-2 lg:pt-4">
                       <Button
                         size="lg"
                         className="bg-white text-gray-900 hover:bg-gray-100 shadow-xl font-semibold text-sm sm:text-base"
@@ -299,7 +299,7 @@ export default function HeroSection() {
         ))}
       </div>
 
-      <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20">
+      <div className="absolute bottom-8 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20">
         {heroSlides.map((_, index) => (
           <button
             key={index}

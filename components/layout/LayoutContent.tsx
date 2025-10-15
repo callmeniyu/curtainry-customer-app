@@ -11,12 +11,16 @@ interface LayoutContentProps {
 }
 
 export default function LayoutContent({ children }: LayoutContentProps) {
-  const { transparent } = useHeader();
+  const { transparent, pageTitle, showSearch } = useHeader();
   const { activeTab } = useBottomNav();
 
   return (
     <>
-      <Header cartCount={3} transparent={transparent} />
+      <Header
+        transparent={transparent}
+        pageTitle={pageTitle}
+        showSearch={showSearch}
+      />
       <main className="min-h-screen">{children}</main>
       <BottomNav />
     </>

@@ -10,8 +10,13 @@ import { servicesData, ServiceProfile } from "@/lib/servicesData";
 
 export default function ServicesPage() {
   const { setActiveTab } = useBottomNav();
-  const { setTransparent } = useHeader();
-  const [searchTerm, setSearchTerm] = useState("");
+  const {
+    setTransparent,
+    setPageTitle,
+    setShowSearch,
+    searchTerm,
+    setSearchTerm,
+  } = useHeader();
   const [selectedRole, setSelectedRole] = useState<
     "all" | "consultant" | "fitter"
   >("all");
@@ -26,7 +31,9 @@ export default function ServicesPage() {
   useEffect(() => {
     setActiveTab("services");
     setTransparent(false);
-  }, [setActiveTab, setTransparent]);
+    setPageTitle("Services");
+    setShowSearch(true);
+  }, [setActiveTab, setTransparent, setPageTitle, setShowSearch]);
 
   // Get unique locations
   const locations = [
@@ -67,24 +74,6 @@ export default function ServicesPage() {
   return (
     <div className="bg-gray-50 pb-10">
       <main className="pt-16">
-        {/* Search Bar */}
-        <div className="bg-white">
-          <div className="section-padding py-4">
-            <div className="max-w-7xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search consultants and fitters..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Filter Buttons */}
         <div className="bg-white border-b">
           <div className="section-padding py-2">

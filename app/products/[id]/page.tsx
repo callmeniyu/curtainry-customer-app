@@ -27,12 +27,17 @@ import SpecificationsSection from "@/components/product/SpecificationsSection";
 import PoliciesSection from "@/components/product/PoliciesSection";
 import { useBottomNav } from "@/context/BottomNavContext";
 import { useHeader } from "@/context/HeaderContext";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 export default function ProductDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const { setActiveTab } = useBottomNav();
   const { setTransparent } = useHeader();
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, wishlistItems, isInWishlist } =
+    useWishlist();
 
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -87,6 +92,52 @@ export default function ProductDetailsPage() {
       setSelectedImage((prev) =>
         prev === product.images.length - 1 ? 0 : prev + 1
       );
+    }
+  };
+
+  const handleAddToCart = () => {
+    const cartItem = {
+      productId: product.id,
+      productType: "readymade" as const,
+      name: product.name,
+      image: product.images[0],
+      quantity,
+      price: totalPrice / quantity,
+      totalPrice,
+      customizations: {
+        selectedSize: product.sizes[selectedSize],
+        selectedColor: product.colors[selectedColor],
+        selectedLining: product.lining[selectedLining],
+        selectedHeader: product.header[selectedHeader],
+      },
+    };
+    addToCart(cartItem);
+    // Show success message or toast
+  };
+
+  const handleAddToWishlist = () => {
+    if (isInWishlist(product.id)) {
+      // Remove from wishlist - but useWishlist doesn't have removeFromWishlist by productId, only by itemId
+      // Actually, the context has removeFromWishlist(itemId), but we need to find the itemId
+      // For simplicity, since it's toggle, we can call addToWishlist which checks if already in
+      // But the context addToWishlist checks and doesn't add if already in
+      // To remove, we need the itemId. Let's modify the context or find another way.
+      // Actually, the context addToWishlist already checks if in wishlist and doesn't add again.
+      // But to remove, we need to call removeFromWishlist with the item id.
+      // So, let's find the item and remove it.
+      const item = wishlistItems.find((item) => item.productId === product.id);
+      if (item) {
+        removeFromWishlist(item.id);
+      }
+    } else {
+      const wishlistItem = {
+        productId: product.id,
+        productType: "readymade" as const,
+        name: product.name,
+        image: product.images[0],
+        price: product.price,
+      };
+      addToWishlist(wishlistItem);
     }
   };
 
@@ -153,8 +204,19 @@ export default function ProductDetailsPage() {
 
                   {/* Action Buttons */}
                   <div className="absolute top-4 left-4 flex gap-2">
-                    <button className="bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-lg transition-all">
-                      <Heart className="h-5 w-5" />
+                    <button
+                      onClick={handleAddToWishlist}
+                      className={`p-2 rounded-full shadow-lg transition-all ${
+                        isInWishlist(product.id)
+                          ? "bg-red-500 text-white"
+                          : "bg-white/90 hover:bg-white text-gray-700"
+                      }`}
+                    >
+                      <Heart
+                        className={`h-5 w-5 ${
+                          isInWishlist(product.id) ? "fill-current" : ""
+                        }`}
+                      />
                     </button>
                     <button className="bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-lg transition-all">
                       <Share2 className="h-5 w-5" />
@@ -422,7 +484,11 @@ export default function ProductDetailsPage() {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4">
-                  <Button variant="secondary" className="flex-1 py-3">
+                  <Button
+                    variant="secondary"
+                    className="flex-1 py-3"
+                    onClick={handleAddToCart}
+                  >
                     <ShoppingCart className="h-5 w-5 mr-2" />
                     Add to Cart
                   </Button>

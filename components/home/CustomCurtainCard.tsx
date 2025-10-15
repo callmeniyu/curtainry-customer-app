@@ -1,9 +1,10 @@
-import { ShoppingCart, Eye, Star } from "lucide-react";
+import { ShoppingCart, Eye, Star, Heart } from "lucide-react";
 import { Product } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import Card from "../ui/Card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useWishlist } from "@/context/WishlistContext";
 
 interface ExtendedProduct extends Product {
   retailerName?: string;
@@ -16,6 +17,26 @@ interface CustomCurtainCardProps {
 
 export default function CustomCurtainCard({ product }: CustomCurtainCardProps) {
   const router = useRouter();
+  const { addToWishlist, removeFromWishlist, wishlistItems, isInWishlist } =
+    useWishlist();
+
+  const handleAddToWishlist = () => {
+    if (isInWishlist(product.id)) {
+      const item = wishlistItems.find((item) => item.productId === product.id);
+      if (item) {
+        removeFromWishlist(item.id);
+      }
+    } else {
+      const wishlistItem = {
+        productId: product.id,
+        productType: "custom" as const,
+        name: product.name,
+        image: product.image || "custom_curtain1.jpg",
+        price: product.price,
+      };
+      addToWishlist(wishlistItem);
+    }
+  };
 
   const discountPercentage = product.originalPrice
     ? Math.round(
@@ -47,13 +68,21 @@ export default function CustomCurtainCard({ product }: CustomCurtainCardProps) {
             <Eye className="h-5 w-5" />
           </button>
           <button
-            className="bg-primary text-white p-2 rounded-full hover:bg-primary-dark transition-colors"
+            className={`p-2 rounded-full transition-colors ${
+              isInWishlist(product.id)
+                ? "bg-red-500 text-white"
+                : "bg-white text-gray-800 hover:bg-gray-100"
+            }`}
             onClick={(e) => {
               e.stopPropagation();
-              // Handle add to cart action
+              handleAddToWishlist();
             }}
           >
-            <ShoppingCart className="h-5 w-5" />
+            <Heart
+              className={`h-5 w-5 ${
+                isInWishlist(product.id) ? "fill-current" : ""
+              }`}
+            />
           </button>
         </div>
 

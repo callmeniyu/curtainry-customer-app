@@ -19,7 +19,7 @@ export default function CategorySection({
   const router = useRouter();
 
   return (
-    <section className="py-8 bg-white">
+    <section className="py-5 bg-white">
       <div className="section-padding">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}

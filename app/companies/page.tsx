@@ -17,8 +17,13 @@ import { companiesData, CompanyProfile } from "@/lib/companiesData";
 
 export default function CompaniesPage() {
   const { setActiveTab } = useBottomNav();
-  const { setTransparent } = useHeader();
-  const [searchTerm, setSearchTerm] = useState("");
+  const {
+    setTransparent,
+    setPageTitle,
+    setShowSearch,
+    searchTerm,
+    setSearchTerm,
+  } = useHeader();
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [selectedRating, setSelectedRating] = useState("All Ratings");
   const [sortBy, setSortBy] = useState("Recommended");
@@ -28,7 +33,9 @@ export default function CompaniesPage() {
   useEffect(() => {
     setActiveTab("companies");
     setTransparent(false);
-  }, [setActiveTab, setTransparent]);
+    setPageTitle("Company");
+    setShowSearch(true);
+  }, [setActiveTab, setTransparent, setPageTitle, setShowSearch]);
 
   // Get unique locations
   const locations = [
@@ -99,24 +106,6 @@ export default function CompaniesPage() {
   return (
     <div className="bg-gray-50 pb-10 md:pb-0">
       <main className="pt-16">
-        {/* Search Bar */}
-        <div className="bg-white">
-          <div className="section-padding py-4">
-            <div className="max-w-7xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search companies, locations, specialties..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Filters and Sort - Single Line on Mobile */}
         <div className="bg-white border-b">
           <div className="section-padding py-4">

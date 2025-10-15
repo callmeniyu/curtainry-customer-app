@@ -112,9 +112,35 @@ export interface Address {
 
 // Order Types
 export interface CartItem {
+  id: string // unique cart item id
   productId: string
+  productType: 'readymade' | 'custom'
+  name: string
+  image: string
   quantity: number
-  customizations?: Record<string, any>
+  price: number
+  totalPrice: number
+  customizations: {
+    // For readymade
+    selectedSize?: { label: string; value: string; price: number }
+    selectedColor?: { name: string; hex: string; image?: string }
+    selectedLining?: { name: string; description: string; price: number }
+    selectedHeader?: { name: string; description: string; price: number }
+    // For custom
+    width?: number
+    height?: number
+    customRemarks?: string
+  }
+}
+
+export interface WishlistItem {
+  id: string
+  productId: string
+  productType: 'readymade' | 'custom'
+  name: string
+  image: string
+  price: number
+  addedAt: Date
 }
 
 export interface Order {

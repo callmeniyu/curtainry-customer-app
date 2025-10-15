@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import {
   Search,
   Filter,
@@ -29,11 +31,17 @@ import {
 
 export default function ProductsPage() {
   const { setActiveTab } = useBottomNav();
-  const { setTransparent } = useHeader();
+  const {
+    setTransparent,
+    setPageTitle,
+    setShowSearch,
+    searchTerm,
+    setSearchTerm,
+  } = useHeader();
+  const searchParams = useSearchParams();
   const [activeProductTab, setActiveProductTab] = useState<
     "readymade" | "custom"
   >("readymade");
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState("All Cities");
   const [selectedCompany, setSelectedCompany] = useState("All Companies");
   const [selectedType, setSelectedType] = useState("All Types");
@@ -47,7 +55,30 @@ export default function ProductsPage() {
   useEffect(() => {
     setActiveTab("products");
     setTransparent(false);
-  }, [setActiveTab, setTransparent]);
+    setPageTitle(
+      activeProductTab === "readymade" ? "Readymade" : "Custom Curtains"
+    );
+    setShowSearch(true);
+
+    // Check for city param
+    const cityParam = searchParams.get("city");
+    if (cityParam && cities.includes(cityParam)) {
+      setSelectedCity(cityParam);
+    }
+
+    // Check for tab param
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "readymade" || tabParam === "custom") {
+      setActiveProductTab(tabParam);
+    }
+  }, [
+    setActiveTab,
+    setTransparent,
+    setPageTitle,
+    setShowSearch,
+    activeProductTab,
+    searchParams,
+  ]);
 
   // Get current products based on active tab
   const currentProducts =
@@ -199,45 +230,68 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="bg-white">
-          <div className="section-padding py-2">
-            <div className="max-w-7xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search products, retailers..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Cities Filter - Hidden Scrollbar */}
-        <div className="bg-white">
-          <div className="section-padding py-1">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-                <MapPin className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                <div className="flex gap-2">
-                  {cities.map((city) => (
+        <div className="bg-white py-3">
+          <div className="w-full">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pl-4">
+              <div className="flex flex-col items-center gap-2 p-2">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+                  <MapPin className="h-8 w-8 text-gray-500" />
+                </div>
+                <span className="text-sm font-medium text-gray-700 text-center">
+                  Location
+                </span>
+              </div>
+              <div className="flex gap-2">
+                {cities
+                  .filter(
+                    (city) =>
+                      city !== "All Cities" &&
+                      [
+                        "Delhi",
+                        "Mumbai",
+                        "Bangalore",
+                        "Chennai",
+                        "Kochi",
+                        "Hyderabad",
+                      ].includes(city)
+                  )
+                  .map((city) => (
                     <button
                       key={city}
                       onClick={() => setSelectedCity(city)}
-                      className={`px-3 py-1 rounded-full text-sm whitespace-nowrap flex-shrink-0 ${
+                      className={`flex flex-col items-center gap-2 p-2 rounded-lg transition-all ${
                         selectedCity === city
-                          ? "bg-primary text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          ? "border-primary"
+                          : "hover:bg-gray-50"
                       }`}
                     >
-                      {city}
+                      <div
+                        className={`relative w-16 h-16 rounded-full overflow-hidden border-2 flex-shrink-0 ${
+                          selectedCity === city
+                            ? "border-primary ring-2 ring-primary/20"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        <Image
+                          src={`/images/${city.toLowerCase()}.jpg`}
+                          alt={city}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                      <span
+                        className={`text-sm text-center font-medium ${
+                          selectedCity === city
+                            ? "text-primary"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        {city}
+                      </span>
                     </button>
                   ))}
-                </div>
               </div>
             </div>
           </div>

@@ -1,9 +1,11 @@
-import { ShoppingCart, Eye, Star } from "lucide-react";
+import { ShoppingCart, Eye, Star, Heart } from "lucide-react";
 import { Product } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import Card from "../ui/Card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 interface ExtendedProduct extends Product {
   retailerName?: string;
@@ -16,6 +18,27 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, wishlistItems, isInWishlist } =
+    useWishlist();
+
+  const handleAddToWishlist = () => {
+    if (isInWishlist(product.id)) {
+      const item = wishlistItems.find((item) => item.productId === product.id);
+      if (item) {
+        removeFromWishlist(item.id);
+      }
+    } else {
+      const wishlistItem = {
+        productId: product.id,
+        productType: "readymade" as const,
+        name: product.name,
+        image: product.image || "readymade1.png",
+        price: product.price,
+      };
+      addToWishlist(wishlistItem);
+    }
+  };
 
   const discountPercentage = product.originalPrice
     ? Math.round(
@@ -47,10 +70,59 @@ export default function ProductCard({ product }: ProductCardProps) {
             <Eye className="h-5 w-5" />
           </button>
           <button
+            className={`p-2 rounded-full transition-colors ${
+              isInWishlist(product.id)
+                ? "bg-red-500 text-white"
+                : "bg-white text-gray-800 hover:bg-gray-100"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddToWishlist();
+            }}
+          >
+            <Heart
+              className={`h-5 w-5 ${
+                isInWishlist(product.id) ? "fill-current" : ""
+              }`}
+            />
+          </button>
+          <button
             className="bg-primary text-white p-2 rounded-full hover:bg-primary-dark transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              // Handle add to cart action
+              const cartItem = {
+                productId: product.id,
+                productType: "readymade" as const,
+                name: product.name,
+                image: product.image || "readymade1.png",
+                quantity: 1,
+                price: product.price,
+                totalPrice: product.price,
+                customizations: {
+                  // Default selections
+                  selectedSize: {
+                    label: "5ft Width",
+                    value: "5ft",
+                    price: 3999,
+                  },
+                  selectedColor: {
+                    name: "Midnight Black",
+                    hex: "#000000",
+                    image: "readymade1_black.jpg",
+                  },
+                  selectedLining: {
+                    name: "Blackout",
+                    description: "Complete light blockage, thermal insulation",
+                    price: 0,
+                  },
+                  selectedHeader: {
+                    name: "Standard Header",
+                    description: "Standard header with hooks",
+                    price: 0,
+                  },
+                },
+              };
+              addToCart(cartItem);
             }}
           >
             <ShoppingCart className="h-5 w-5" />
