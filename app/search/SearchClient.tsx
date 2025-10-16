@@ -122,19 +122,36 @@ const SearchResultItem = ({ result }: { result: SearchResult }) => {
           </div>
         )}
         <div className="flex-1">
-          <h3 className={`font-semibold ${result.type === "section" ? "text-primary" : "text-gray-900"}`}>
+          <h3
+            className={`font-semibold ${
+              result.type === "section" ? "text-primary" : "text-gray-900"
+            }`}
+          >
             {result.name}
           </h3>
-          <p className="text-sm text-gray-600 capitalize">{result.type === "section" ? "Category" : result.type}</p>
-          {result.category && result.type !== "section" && <p className="text-sm text-primary">{result.category}</p>}
-          {result.location && <p className="text-sm text-gray-500">{result.location}</p>}
+          <p className="text-sm text-gray-600 capitalize">
+            {result.type === "section" ? "Category" : result.type}
+          </p>
+          {result.category && result.type !== "section" && (
+            <p className="text-sm text-primary">{result.category}</p>
+          )}
+          {result.location && (
+            <p className="text-sm text-gray-500">{result.location}</p>
+          )}
           {result.price && (
             <p className="text-sm font-medium text-primary">
-              ₹{typeof result.price === "number" ? result.price.toLocaleString() : result.price}
+              ₹
+              {typeof result.price === "number"
+                ? result.price.toLocaleString()
+                : result.price}
             </p>
           )}
         </div>
-        <ArrowRight className={`h-5 w-5 ${result.type === "section" ? "text-primary" : "text-gray-400"}`} />
+        <ArrowRight
+          className={`h-5 w-5 ${
+            result.type === "section" ? "text-primary" : "text-gray-400"
+          }`}
+        />
       </div>
     </div>
   );
@@ -156,39 +173,107 @@ export default function SearchClient() {
   // Combine all searchable data
   const allData = useMemo(() => {
     const products = [
-      ...readyMadeCurtainsData.map((p) => ({ ...p, type: "product" as const, category: "Readymade" })),
-      ...customCurtainsData.map((p) => ({ ...p, type: "product" as const, category: "Custom" })),
+      ...readyMadeCurtainsData.map((p) => ({
+        ...p,
+        type: "product" as const,
+        category: "Readymade",
+      })),
+      ...customCurtainsData.map((p) => ({
+        ...p,
+        type: "product" as const,
+        category: "Custom",
+      })),
     ];
-    const services = servicesData.map((s) => ({ ...s, type: "service" as const }));
-    const companies = companiesData.map((c) => ({ ...c, type: "company" as const }));
+    const services = servicesData.map((s) => ({
+      ...s,
+      type: "service" as const,
+    }));
+    const companies = companiesData.map((c) => ({
+      ...c,
+      type: "company" as const,
+    }));
 
     return [...products, ...services, ...companies];
   }, []);
 
   // Filter results based on search term (only by name/title)
   const searchResults = useMemo(() => {
-    if (!searchTerm.trim()) return { products: [], services: [], companies: [], sections: [] };
+    if (!searchTerm.trim())
+      return { products: [], services: [], companies: [], sections: [] };
 
     const term = searchTerm.toLowerCase();
 
-    const products = allData.filter((item) => item.type === "product" && item.name.toLowerCase().includes(term)).slice(0, 10);
+    const products = allData
+      .filter(
+        (item) =>
+          item.type === "product" && item.name.toLowerCase().includes(term)
+      )
+      .slice(0, 10);
 
-    const services = allData.filter((item) => item.type === "service" && item.name.toLowerCase().includes(term)).slice(0, 10);
+    const services = allData
+      .filter(
+        (item) =>
+          item.type === "service" && item.name.toLowerCase().includes(term)
+      )
+      .slice(0, 10);
 
-    const companies = allData.filter((item) => item.type === "company" && item.name.toLowerCase().includes(term)).slice(0, 10);
+    const companies = allData
+      .filter(
+        (item) =>
+          item.type === "company" && item.name.toLowerCase().includes(term)
+      )
+      .slice(0, 10);
 
     // Section results
     const sections: SearchResult[] = [];
     const sectionData = [
-      { name: "Services", sectionType: "services" as const, keywords: ["service", "services", "consultation", "measurement", "installation"] },
-      { name: "Readymade Curtains", sectionType: "readymade" as const, keywords: ["readymade", "ready made", "curtain", "curtains", "ready"] },
-      { name: "Custom Curtains", sectionType: "custom" as const, keywords: ["custom", "customized", "made to order", "bespoke"] },
-      { name: "Companies", sectionType: "companies" as const, keywords: ["company", "companies", "retailer", "retailers", "store", "stores"] },
+      {
+        name: "Services",
+        sectionType: "services" as const,
+        keywords: [
+          "service",
+          "services",
+          "consultation",
+          "measurement",
+          "installation",
+        ],
+      },
+      {
+        name: "Readymade Curtains",
+        sectionType: "readymade" as const,
+        keywords: ["readymade", "ready made", "curtain", "curtains", "ready"],
+      },
+      {
+        name: "Custom Curtains",
+        sectionType: "custom" as const,
+        keywords: ["custom", "customized", "made to order", "bespoke"],
+      },
+      {
+        name: "Companies",
+        sectionType: "companies" as const,
+        keywords: [
+          "company",
+          "companies",
+          "retailer",
+          "retailers",
+          "store",
+          "stores",
+        ],
+      },
     ];
 
     sectionData.forEach((section) => {
-      if (section.keywords.some((keyword) => keyword.includes(term) || term.includes(keyword))) {
-        sections.push({ id: section.sectionType, name: section.name, type: "section", sectionType: section.sectionType });
+      if (
+        section.keywords.some(
+          (keyword) => keyword.includes(term) || term.includes(keyword)
+        )
+      ) {
+        sections.push({
+          id: section.sectionType,
+          name: section.name,
+          type: "section",
+          sectionType: section.sectionType,
+        });
       }
     });
 
@@ -220,7 +305,10 @@ export default function SearchClient() {
                 autoFocus
               />
               {searchTerm && (
-                <button onClick={() => handleSearch("")} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <button
+                  onClick={() => handleSearch("")}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
                   <X className="h-5 w-5" />
                 </button>
               )}
@@ -232,9 +320,15 @@ export default function SearchClient() {
         <div className="max-w-4xl mx-auto px-4 py-6">
           {searchTerm && (
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900">Search Results for "{searchTerm}"</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Search Results for "{searchTerm}"
+              </h2>
               <p className="text-gray-600">
-                {searchResults.products.length + searchResults.services.length + searchResults.companies.length + searchResults.sections.length} results found
+                {searchResults.products.length +
+                  searchResults.services.length +
+                  searchResults.companies.length +
+                  searchResults.sections.length}{" "}
+                results found
               </p>
             </div>
           )}
@@ -242,10 +336,15 @@ export default function SearchClient() {
           {/* Sections */}
           {searchResults.sections.length > 0 && (
             <div className="mb-8">
-              <h3 className="text-md font-semibold text-gray-800 mb-4">Browse Categories</h3>
+              <h3 className="text-md font-semibold text-gray-800 mb-4">
+                Browse Categories
+              </h3>
               <div className="space-y-3">
                 {searchResults.sections.map((result) => (
-                  <SearchResultItem key={`section-${result.id}`} result={result} />
+                  <SearchResultItem
+                    key={`section-${result.id}`}
+                    result={result}
+                  />
                 ))}
               </div>
             </div>
@@ -254,10 +353,15 @@ export default function SearchClient() {
           {/* Products Section */}
           {searchResults.products.length > 0 && (
             <div className="mb-8">
-              <h3 className="text-md font-semibold text-gray-800 mb-4">Products</h3>
+              <h3 className="text-md font-semibold text-gray-800 mb-4">
+                Products
+              </h3>
               <div className="space-y-3">
                 {searchResults.products.map((result) => (
-                  <SearchResultItem key={`product-${result.id}`} result={result} />
+                  <SearchResultItem
+                    key={`product-${result.id}`}
+                    result={result}
+                  />
                 ))}
               </div>
             </div>
@@ -266,10 +370,15 @@ export default function SearchClient() {
           {/* Services Section */}
           {searchResults.services.length > 0 && (
             <div className="mb-8">
-              <h3 className="text-md font-semibold text-gray-800 mb-4">Services</h3>
+              <h3 className="text-md font-semibold text-gray-800 mb-4">
+                Services
+              </h3>
               <div className="space-y-3">
                 {searchResults.services.map((result) => (
-                  <SearchResultItem key={`service-${result.id}`} result={result} />
+                  <SearchResultItem
+                    key={`service-${result.id}`}
+                    result={result}
+                  />
                 ))}
               </div>
             </div>
@@ -278,26 +387,43 @@ export default function SearchClient() {
           {/* Companies Section */}
           {searchResults.companies.length > 0 && (
             <div className="mb-8">
-              <h3 className="text-md font-semibold text-gray-800 mb-4">Companies</h3>
+              <h3 className="text-md font-semibold text-gray-800 mb-4">
+                Companies
+              </h3>
               <div className="space-y-3">
                 {searchResults.companies.map((result) => (
-                  <SearchResultItem key={`company-${result.id}`} result={result} />
+                  <SearchResultItem
+                    key={`company-${result.id}`}
+                    result={result}
+                  />
                 ))}
               </div>
             </div>
           )}
 
-          {searchTerm && searchResults.products.length === 0 && searchResults.services.length === 0 && searchResults.companies.length === 0 && searchResults.sections.length === 0 ? (
+          {searchTerm &&
+          searchResults.products.length === 0 &&
+          searchResults.services.length === 0 &&
+          searchResults.companies.length === 0 &&
+          searchResults.sections.length === 0 ? (
             <div className="text-center py-12">
               <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-              <p className="text-gray-600">Try searching for product names, service names, or company names</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No results found
+              </h3>
+              <p className="text-gray-600">
+                Try searching for product names, service names, or company names
+              </p>
             </div>
           ) : !searchTerm ? (
             <div className="text-center py-12">
               <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Start searching</h3>
-              <p className="text-gray-600">Search for curtains, services, and companies by name</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Start searching
+              </h3>
+              <p className="text-gray-600">
+                Search for curtains, services, and companies by name
+              </p>
             </div>
           ) : null}
         </div>

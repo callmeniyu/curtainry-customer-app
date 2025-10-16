@@ -6,7 +6,13 @@ import SearchClient from "./SearchClient";
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="min-h-[200px] flex items-center justify-center">Loading search...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-[200px] flex items-center justify-center">
+          Loading search...
+        </div>
+      }
+    >
       <SearchClient />
     </Suspense>
   );
